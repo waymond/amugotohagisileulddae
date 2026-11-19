@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>지금 상황 적기</title>
+<style>
+  :root {
+    --bg: #e9e9e7;
+    --ink: #222;
+    --sub: #6b6b68;
+    --line: #c9c9c5;
+    --note: #f6e58d;
+    --note-edge: #e2cf6b;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", sans-serif;
+    line-height: 1.6;
+    -webkit-text-size-adjust: 100%;
+  }
+  main {
+    max-width: 560px;
+    margin: 0 auto;
+    padding: 40px 20px 56px;
+  }
+  h1 {
+    font-size: 1.35rem;
+    font-weight: 600;
+    line-height: 1.5;
+    margin: 0 0 8px;
+  }
+  .sub {
+    margin: 0 0 32px;
+    color: var(--sub);
+    font-size: 0.95rem;
+  }
+
+  /* 포스트잇 */
+  .note {
+    background: var(--note);
+    border-bottom: 3px solid var(--note-edge);
+    box-shadow: 0 2px 6px rgba(0,0,0,.18);
+    padding: 16px 16px 12px;
+    border-radius: 2px;
+  }
+  .note label {
+    display: block;
+    font-size: 0.85rem;
+    color: #5c5420;
+    margin-bottom: 6px;
+  }
+  .note textarea {
+    width: 100%;
+    min-height: 180px;
+    border: 0;
+    outline: 0;
+    resize: vertical;
+    background: transparent;
+    color: var(--ink);
+    font: inherit;
+    font-size: 1rem;
+    line-height: 1.7;
+    /* 줄 쳐진 메모지 느낌, 최소한으로 */
+    background-image: repeating-linear-gradient(transparent, transparent 26.9px, rgba(0,0,0,.12) 27px);
+    background-attachment: local;
+  }
+  .note textarea::placeholder { color: #8a8240; }
+
+  button.go {
+    display: block;
+    width: 100%;
+    margin-top: 14px;
+    padding: 14px;
+    font: inherit;
+    font-size: 1rem;
+    color: #fff;
+    background: #333;
+    border: 0;
+    border-radius: 2px;
+    cursor: pointer;
+  }
+  button.go:active { background: #000; }
+
+  /* 코멘트 */
+  .comment {
+    margin-top: 20px;
+    padding: 14px 16px;
+    border: 1px solid var(--line);
+    background: #f4f4f2;
+    min-height: 60px;
+  }
+  .comment .tag { display: block; font-size: 0.78rem; color: var(--sub); margin-bottom: 4px; }
+  .comment .body { margin: 0; }
+  .comment .body.empty { color: var(--sub); }
+
+  /* 저장 자리 */
+  section.log {
+    margin-top: 40px;
+    border-top: 1px solid var(--line);
+    padding-top: 16px;
+  }
+  .log h2 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin: 0 0 4px;
+  }
+  .later {
+    display: inline-block;
+    margin-left: 6px;
+    padding: 0 6px;
+    font-size: 0.72rem;
+    font-weight: 400;
+    color: var(--sub);
+    border: 1px solid var(--line);
+    border-radius: 2px;
+    vertical-align: middle;
+  }
+  .log p.desc { margin: 0 0 12px; font-size: 0.85rem; color: var(--sub); }
+  .row {
+    display: grid;
+    grid-template-columns: 5.5em 1fr;
+    gap: 2px 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--line);
+    font-size: 0.9rem;
+    color: var(--sub);
+  }
+  .row dt { color: var(--sub); }
+  .row dd { margin: 0; color: var(--ink); }
+  dl { margin: 0; }
+  .ex { font-size: 0.78rem; color: var(--sub); }
+
+  .live {
+    margin-top: 16px;
+    font-size: 0.85rem;
+    color: var(--sub);
+  }
+</style>
+</head>
+<body>
+<main>
+  <h1>일하기 싫은데 일을 해야 해서 불편하다</h1>
+  <p class="sub">고민이 있는데 고민 해결이 어려워서 불편하다</p>
+
+  <div class="note">
+    <label for="situation">지금 상황을 적어 주세요</label>
+    <textarea id="situation" placeholder="여기에 적기"></textarea>
+  </div>
+  <button class="go" id="go" type="button">코멘트 보기</button>
+
+  <div class="comment" aria-live="polite">
+    <span class="tag">코멘트</span>
+    <p class="body empty" id="out">버튼을 누르면 여기에 코멘트가 나옵니다.</p>
+  </div>
+
+  <section class="log">
+    <h2>기록 <span class="later">나중에 연결</span></h2>
+    <p class="desc">언제 켰는지, 어떤 고민으로, 어떤 상황에서 켰는지 남는 자리입니다. 아래는 예시 값이고 아직 저장되지 않습니다.</p>
+    <dl>
+      <div class="row">
+        <dt>언제</dt><dd>예시 날짜·시간 <span class="ex">(예시)</span></dd>
+        <dt>고민</dt><dd>예시 고민 <span class="ex">(예시)</span></dd>
+        <dt>상황</dt><dd>예시 상황 <span class="ex">(예시)</span></dd>
+      </div>
+      <div class="row">
+        <dt>언제</dt><dd>예시 날짜·시간 <span class="ex">(예시)</span></dd>
+        <dt>고민</dt><dd>예시 고민 <span class="ex">(예시)</span></dd>
+        <dt>상황</dt><dd>예시 상황 <span class="ex">(예시)</span></dd>
+      </div>
+    </dl>
+    <p class="live">실시간 정보: 예시 값 <span class="later">나중에 연결</span></p>
+  </section>
+</main>
+
+<script>
+  // 코멘트는 1가지 고정. 문구가 정해지면 아래 한 줄만 바꾸면 됩니다.
+  var FIXED_COMMENT = "(고정 코멘트 문구 — 아직 정해지지 않음)";
+
+  var input = document.getElementById("situation");
+  var out = document.getElementById("out");
+
+  document.getElementById("go").addEventListener("click", function () {
+    if (!input.value.trim()) {
+      out.className = "body empty";
+      out.textContent = "먼저 포스트잇에 지금 상황을 적어 주세요.";
+      input.focus();
+      return;
+    }
+    out.className = "body";
+    out.textContent = FIXED_COMMENT;
+  });
+</script>
+</body>
+</html>
