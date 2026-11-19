@@ -3,159 +3,282 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>지금 상황 적기</title>
+<title>지금 상황 적기 (MZ ver.)</title>
 <style>
   :root {
-    --bg: #e9e9e7;
-    --ink: #222;
-    --sub: #6b6b68;
-    --line: #c9c9c5;
-    --note: #f6e58d;
-    --note-edge: #e2cf6b;
+    --pink: #ff3ea5;
+    --lime: #c6ff3d;
+    --blue: #3d5bff;
+    --yellow: #ffe94a;
+    --purple: #a45bff;
+    --ink: #151515;
   }
   * { box-sizing: border-box; }
   html, body { margin: 0; }
   body {
-    background: var(--bg);
     color: var(--ink);
-    font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", sans-serif;
-    line-height: 1.6;
+    font-family: "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", sans-serif;
+    line-height: 1.5;
     -webkit-text-size-adjust: 100%;
+    overflow-x: hidden;
+    background-color: var(--lime);
+    background-image:
+      radial-gradient(var(--pink) 2px, transparent 2.5px),
+      radial-gradient(var(--blue) 2px, transparent 2.5px);
+    background-size: 28px 28px;
+    background-position: 0 0, 14px 14px;
   }
+
+  /* 흐르는 띠 */
+  .marquee {
+    background: var(--ink);
+    color: var(--yellow);
+    font-weight: 800;
+    font-size: 0.95rem;
+    white-space: nowrap;
+    overflow: hidden;
+    border-bottom: 4px solid var(--pink);
+  }
+  .marquee.b { border-bottom: 0; border-top: 4px solid var(--blue); color: var(--lime); }
+  .marquee span {
+    display: inline-block;
+    padding: 6px 0;
+    animation: slide 18s linear infinite;
+  }
+  .marquee.b span { animation-direction: reverse; }
+  @keyframes slide { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
   main {
+    position: relative;
     max-width: 560px;
     margin: 0 auto;
-    padding: 40px 20px 56px;
+    padding: 28px 18px 48px;
   }
+
+  /* 둥둥 떠다니는 스티커 */
+  .st {
+    position: absolute;
+    font-size: 2rem;
+    pointer-events: none;
+    animation: bob 3s ease-in-out infinite;
+  }
+  .st.s1 { top: 6px; right: 14px; animation-delay: -.5s; }
+  .st.s2 { top: 150px; left: -2px; font-size: 1.6rem; animation-delay: -1.2s; }
+  .st.s3 { top: 330px; right: 6px; font-size: 2.4rem; animation-delay: -2s; }
+  @keyframes bob {
+    0%,100% { transform: translateY(0) rotate(-8deg); }
+    50% { transform: translateY(-10px) rotate(10deg); }
+  }
+
   h1 {
-    font-size: 1.35rem;
-    font-weight: 600;
-    line-height: 1.5;
-    margin: 0 0 8px;
+    margin: 0 0 10px;
+    font-size: 1.9rem;
+    font-weight: 900;
+    line-height: 1.25;
+    letter-spacing: -0.03em;
+    transform: rotate(-2deg);
+    text-shadow: 3px 3px 0 var(--pink), 6px 6px 0 var(--blue);
   }
   .sub {
-    margin: 0 0 32px;
-    color: var(--sub);
+    display: inline-block;
+    margin: 0 0 30px;
+    padding: 6px 12px;
+    background: var(--ink);
+    color: #fff;
+    font-weight: 700;
     font-size: 0.95rem;
+    transform: rotate(1.5deg);
+    box-shadow: 4px 4px 0 var(--purple);
   }
 
   /* 포스트잇 */
   .note {
-    background: var(--note);
-    border-bottom: 3px solid var(--note-edge);
-    box-shadow: 0 2px 6px rgba(0,0,0,.18);
-    padding: 16px 16px 12px;
-    border-radius: 2px;
+    position: relative;
+    background: var(--yellow);
+    border: 3px solid var(--ink);
+    padding: 22px 16px 14px;
+    transform: rotate(-1.5deg);
+    box-shadow: 8px 8px 0 var(--ink);
+  }
+  .note::before {            /* 테이프 */
+    content: "";
+    position: absolute;
+    top: -14px; left: 50%;
+    width: 90px; height: 24px;
+    margin-left: -45px;
+    background: repeating-linear-gradient(45deg, var(--pink) 0 8px, #fff 8px 16px);
+    border: 2px solid var(--ink);
+    transform: rotate(3deg);
   }
   .note label {
     display: block;
-    font-size: 0.85rem;
-    color: #5c5420;
+    font-weight: 800;
+    font-size: 0.9rem;
     margin-bottom: 6px;
   }
   .note textarea {
     width: 100%;
-    min-height: 180px;
+    min-height: 190px;
     border: 0;
     outline: 0;
     resize: vertical;
-    background: transparent;
-    color: var(--ink);
     font: inherit;
-    font-size: 1rem;
-    line-height: 1.7;
-    /* 줄 쳐진 메모지 느낌, 최소한으로 */
-    background-image: repeating-linear-gradient(transparent, transparent 26.9px, rgba(0,0,0,.12) 27px);
+    font-size: 1.05rem;
+    font-weight: 600;
+    line-height: 28px;
+    color: var(--ink);
+    background-color: transparent;
+    background-image: repeating-linear-gradient(transparent, transparent 27px, rgba(0,0,0,.25) 28px);
     background-attachment: local;
   }
-  .note textarea::placeholder { color: #8a8240; }
+  .note textarea::placeholder { color: rgba(0,0,0,.45); }
 
   button.go {
     display: block;
     width: 100%;
-    margin-top: 14px;
-    padding: 14px;
+    margin-top: 26px;
+    padding: 16px;
     font: inherit;
-    font-size: 1rem;
+    font-size: 1.15rem;
+    font-weight: 900;
     color: #fff;
-    background: #333;
+    background: var(--pink);
+    border: 3px solid var(--ink);
+    box-shadow: 6px 6px 0 var(--ink);
+    cursor: pointer;
+    transform: rotate(1deg);
+    transition: transform .08s, box-shadow .08s;
+  }
+  button.go:active {
+    transform: translate(4px, 4px) rotate(1deg);
+    box-shadow: 2px 2px 0 var(--ink);
+  }
+
+  /* 코멘트 팝업 */
+  .overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: rgba(21,21,21,.55);
+  }
+  .overlay.show { display: flex; }
+  .pop {
+    position: relative;
+    width: 100%;
+    max-width: 420px;
+    padding: 28px 20px 18px;
+    background: #fff;
+    border: 3px solid var(--ink);
+    border-radius: 18px;
+    box-shadow: 8px 8px 0 var(--blue);
+    animation: pop .45s cubic-bezier(.2,1.4,.4,1);
+  }
+  .pop .tag {
+    position: absolute;
+    top: -15px; left: 16px;
+    padding: 1px 10px;
+    background: var(--lime);
+    border: 2px solid var(--ink);
+    font-size: 0.8rem;
+    font-weight: 900;
+  }
+  .pop .body { margin: 0 0 18px; font-size: 1.1rem; font-weight: 800; }
+  .pop button {
+    width: 100%;
+    padding: 12px;
+    font: inherit;
+    font-weight: 900;
+    color: #fff;
+    background: var(--ink);
     border: 0;
-    border-radius: 2px;
     cursor: pointer;
   }
-  button.go:active { background: #000; }
-
-  /* 코멘트 */
-  .comment {
-    margin-top: 20px;
-    padding: 14px 16px;
-    border: 1px solid var(--line);
-    background: #f4f4f2;
-    min-height: 60px;
+  @keyframes pop {
+    0% { transform: scale(.4) rotate(-8deg); opacity: 0; }
+    100% { transform: scale(1) rotate(0); opacity: 1; }
   }
-  .comment .tag { display: block; font-size: 0.78rem; color: var(--sub); margin-bottom: 4px; }
-  .comment .body { margin: 0; }
-  .comment .body.empty { color: var(--sub); }
+  canvas#fx {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 60;
+    pointer-events: none;
+  }
+  .shake { animation: shake .4s; }
+  @keyframes shake {
+    0%,100% { transform: rotate(-1.5deg) translateX(0); }
+    25% { transform: rotate(-1.5deg) translateX(-8px); }
+    75% { transform: rotate(-1.5deg) translateX(8px); }
+  }
 
   /* 저장 자리 */
   section.log {
-    margin-top: 40px;
-    border-top: 1px solid var(--line);
-    padding-top: 16px;
+    margin-top: 42px;
+    padding: 18px 14px 16px;
+    background: var(--purple);
+    color: #fff;
+    border: 3px solid var(--ink);
+    box-shadow: 6px 6px 0 var(--ink);
+    transform: rotate(.8deg);
   }
-  .log h2 {
-    font-size: 0.95rem;
-    font-weight: 600;
-    margin: 0 0 4px;
-  }
+  .log h2 { margin: 0 0 6px; font-size: 1.1rem; font-weight: 900; }
   .later {
     display: inline-block;
     margin-left: 6px;
-    padding: 0 6px;
+    padding: 0 8px;
     font-size: 0.72rem;
-    font-weight: 400;
-    color: var(--sub);
-    border: 1px solid var(--line);
-    border-radius: 2px;
+    font-weight: 900;
+    color: var(--ink);
+    background: var(--yellow);
+    border: 2px solid var(--ink);
+    transform: rotate(-3deg);
     vertical-align: middle;
   }
-  .log p.desc { margin: 0 0 12px; font-size: 0.85rem; color: var(--sub); }
+  .log p.desc { margin: 0 0 12px; font-size: 0.85rem; }
   .row {
     display: grid;
-    grid-template-columns: 5.5em 1fr;
-    gap: 2px 12px;
-    padding: 10px 0;
-    border-bottom: 1px solid var(--line);
+    grid-template-columns: 4em 1fr;
+    gap: 2px 10px;
+    margin-bottom: 10px;
+    padding: 10px 12px;
+    background: #fff;
+    color: var(--ink);
+    border: 2px solid var(--ink);
     font-size: 0.9rem;
-    color: var(--sub);
   }
-  .row dt { color: var(--sub); }
-  .row dd { margin: 0; color: var(--ink); }
+  .row:nth-child(even) { transform: rotate(-.8deg); }
+  .row dt { font-weight: 900; color: var(--blue); }
+  .row dd { margin: 0; font-weight: 600; }
+  .ex { font-size: 0.75rem; color: #777; font-weight: 500; }
   dl { margin: 0; }
-  .ex { font-size: 0.78rem; color: var(--sub); }
+  .live { margin: 14px 0 0; font-size: 0.88rem; font-weight: 700; }
 
-  .live {
-    margin-top: 16px;
-    font-size: 0.85rem;
-    color: var(--sub);
+  @media (prefers-reduced-motion: reduce) {
+    .marquee span, .st, .pop, .shake { animation: none; }
   }
 </style>
 </head>
 <body>
+<div class="marquee"><span>일하기 싫은데 일을 해야 해서 불편하다 ✦ 고민이 있는데 고민 해결이 어려워서 불편하다 ✦ 일하기 싫은데 일을 해야 해서 불편하다 ✦ 고민이 있는데 고민 해결이 어려워서 불편하다 ✦ &nbsp;</span></div>
+
 <main>
-  <h1>일하기 싫은데 일을 해야 해서 불편하다</h1>
+  <div class="st s1">✨</div>
+  <div class="st s2">💥</div>
+  <div class="st s3">⭐</div>
+
+  <h1>일하기 싫은데<br>일을 해야 해서<br>불편하다</h1>
   <p class="sub">고민이 있는데 고민 해결이 어려워서 불편하다</p>
 
   <div class="note">
-    <label for="situation">지금 상황을 적어 주세요</label>
+    <label for="situation">📝 지금 상황을 적어 주세요</label>
     <textarea id="situation" placeholder="여기에 적기"></textarea>
   </div>
-  <button class="go" id="go" type="button">코멘트 보기</button>
-
-  <div class="comment" aria-live="polite">
-    <span class="tag">코멘트</span>
-    <p class="body empty" id="out">버튼을 누르면 여기에 코멘트가 나옵니다.</p>
-  </div>
+  <button class="go" id="go" type="button">코멘트 보기 →</button>
 
   <section class="log">
     <h2>기록 <span class="later">나중에 연결</span></h2>
@@ -176,22 +299,93 @@
   </section>
 </main>
 
+<div class="marquee b"><span>일하기 싫은데 일을 해야 해서 불편하다 ✦ 고민이 있는데 고민 해결이 어려워서 불편하다 ✦ 일하기 싫은데 일을 해야 해서 불편하다 ✦ 고민이 있는데 고민 해결이 어려워서 불편하다 ✦ &nbsp;</span></div>
+
+<div class="overlay" id="overlay" role="dialog" aria-live="polite">
+  <div class="pop">
+    <span class="tag">코멘트</span>
+    <p class="body" id="out"></p>
+    <button type="button" id="close">닫기</button>
+  </div>
+</div>
+<canvas id="fx"></canvas>
+
 <script>
   // 코멘트는 1가지 고정. 문구가 정해지면 아래 한 줄만 바꾸면 됩니다.
   var FIXED_COMMENT = "(고정 코멘트 문구 — 아직 정해지지 않음)";
 
   var input = document.getElementById("situation");
+  var note = document.querySelector(".note");
+  var overlay = document.getElementById("overlay");
   var out = document.getElementById("out");
+  var canvas = document.getElementById("fx");
+  var ctx = canvas.getContext("2d");
+  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var pieces = [], running = false;
+  var COLORS = ["#ff3ea5", "#c6ff3d", "#3d5bff", "#ffe94a", "#a45bff", "#ffffff"];
+
+  function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  window.addEventListener("resize", resize);
+  resize();
+
+  function burst() {
+    var w = canvas.width, h = canvas.height;
+    // 양쪽 아래 모서리에서 빵! 하고 터지는 색종이
+    [[0, h, -1], [w, h, 1]].forEach(function (s) {
+      for (var i = 0; i < 90; i++) {
+        var ang = (-Math.PI / 2) - s[2] * (0.15 + Math.random() * 0.7);
+        var sp = 10 + Math.random() * 14;
+        pieces.push({
+          x: s[0], y: s[1],
+          vx: Math.cos(ang) * sp, vy: Math.sin(ang) * sp,
+          w: 6 + Math.random() * 8, h: 10 + Math.random() * 10,
+          rot: Math.random() * 6, vr: (Math.random() - .5) * .4,
+          c: COLORS[(Math.random() * COLORS.length) | 0]
+        });
+      }
+    });
+    if (!running) { running = true; requestAnimationFrame(tick); }
+  }
+
+  function tick() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    pieces = pieces.filter(function (p) { return p.y < canvas.height + 30; });
+    pieces.forEach(function (p) {
+      p.vy += 0.35; p.vx *= 0.985; p.vy *= 0.985;
+      p.x += p.vx; p.y += p.vy; p.rot += p.vr;
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rot);
+      ctx.fillStyle = p.c;
+      ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+      ctx.restore();
+    });
+    if (pieces.length) requestAnimationFrame(tick);
+    else { running = false; ctx.clearRect(0, 0, canvas.width, canvas.height); }
+  }
 
   document.getElementById("go").addEventListener("click", function () {
     if (!input.value.trim()) {
-      out.className = "body empty";
-      out.textContent = "먼저 포스트잇에 지금 상황을 적어 주세요.";
+      note.classList.remove("shake");
+      void note.offsetWidth;
+      note.classList.add("shake");
+      input.placeholder = "먼저 여기에 지금 상황을 적어 주세요";
       input.focus();
       return;
     }
-    out.className = "body";
     out.textContent = FIXED_COMMENT;
+    overlay.classList.add("show");
+    if (!reduce) burst();
+  });
+
+  document.getElementById("close").addEventListener("click", function () {
+    overlay.classList.remove("show");
+  });
+  overlay.addEventListener("click", function (e) {
+    if (e.target === overlay) overlay.classList.remove("show");
   });
 </script>
 </body>
