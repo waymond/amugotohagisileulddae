@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>지금 상황 적기 고민을 말해줘잉~</title>
+<title>지금 상황 적기 (MZ ver.)</title>
 <style>
   :root {
     --pink: #ff3ea5;
@@ -216,9 +216,34 @@
     75% { transform: rotate(-1.5deg) translateX(8px); }
   }
 
+  /* 홈 / 기록 탭 */
+  nav.tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 26px;
+  }
+  nav.tabs button {
+    flex: 1;
+    padding: 12px;
+    font: inherit;
+    font-size: 1rem;
+    font-weight: 900;
+    color: var(--ink);
+    background: #fff;
+    border: 3px solid var(--ink);
+    box-shadow: 4px 4px 0 var(--ink);
+    cursor: pointer;
+  }
+  nav.tabs button[aria-selected="true"] {
+    background: var(--ink);
+    color: var(--lime);
+    box-shadow: 4px 4px 0 var(--pink);
+  }
+  [hidden] { display: none !important; }
+
   /* 저장 자리 */
   section.log {
-    margin-top: 42px;
+    margin-top: 8px;
     padding: 18px 14px 16px;
     background: var(--purple);
     color: #fff;
@@ -271,6 +296,12 @@
   <div class="st s2">💥</div>
   <div class="st s3">⭐</div>
 
+  <nav class="tabs" role="tablist">
+    <button type="button" role="tab" id="tab-home" data-view="home" aria-selected="true">홈</button>
+    <button type="button" role="tab" id="tab-log" data-view="log" aria-selected="false">기록</button>
+  </nav>
+
+  <div id="view-home">
   <h1>일하기 싫은데<br>일을 해야 해서<br>불편하다</h1>
   <p class="sub">고민이 있는데 고민 해결이 어려워서 불편하다</p>
 
@@ -279,7 +310,9 @@
     <textarea id="situation" placeholder="여기에 적기"></textarea>
   </div>
   <button class="go" id="go" type="button">코멘트 보기 →</button>
+  </div>
 
+  <div id="view-log" hidden>
   <section class="log">
     <h2>기록 <span class="later">나중에 연결</span></h2>
     <p class="desc">언제 켰는지, 어떤 고민으로, 어떤 상황에서 켰는지 남는 자리입니다. 아래는 예시 값이고 아직 저장되지 않습니다.</p>
@@ -297,6 +330,7 @@
     </dl>
     <p class="live">실시간 정보: 예시 값 <span class="later">나중에 연결</span></p>
   </section>
+  </div>
 </main>
 
 <div class="marquee b"><span>일하기 싫은데 일을 해야 해서 불편하다 ✦ 고민이 있는데 고민 해결이 어려워서 불편하다 ✦ 일하기 싫은데 일을 해야 해서 불편하다 ✦ 고민이 있는데 고민 해결이 어려워서 불편하다 ✦ &nbsp;</span></div>
@@ -312,7 +346,7 @@
 
 <script>
   // 코멘트는 1가지 고정. 문구가 정해지면 아래 한 줄만 바꾸면 됩니다.
-  var FIXED_COMMENT = "(고정 코멘트 문구 — 아직 정해지지 않음)";
+  var FIXED_COMMENT = "알아서 하시오";
 
   var input = document.getElementById("situation");
   var note = document.querySelector(".note");
@@ -380,6 +414,24 @@
     overlay.classList.add("show");
     if (!reduce) burst();
   });
+
+  // 홈 / 기록 화면 전환
+  function showView(name) {
+    document.getElementById("view-home").hidden = name !== "home";
+    document.getElementById("view-log").hidden = name !== "log";
+    document.getElementById("tab-home").setAttribute("aria-selected", name === "home");
+    document.getElementById("tab-log").setAttribute("aria-selected", name === "log");
+    overlay.classList.remove("show");
+    window.scrollTo(0, 0);
+  }
+  document.querySelectorAll("nav.tabs button").forEach(function (b) {
+    b.addEventListener("click", function () {
+      var v = b.getAttribute("data-view");
+      showView(v);
+      history.replaceState(null, "", "#" + v);
+    });
+  });
+  if (location.hash === "#log") showView("log");
 
   document.getElementById("close").addEventListener("click", function () {
     overlay.classList.remove("show");
